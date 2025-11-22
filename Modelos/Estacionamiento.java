@@ -1,6 +1,8 @@
 package Modelos;
 import java.util.ArrayList;
 import java.util.List;
+
+import Enum.Mensajes;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -29,20 +31,20 @@ public class Estacionamiento {
 
     public int cantidadPlazasDisponibles() {
         return (int) plazas.stream()
-                           .filter(p -> !p.isOcupada())
-                           .count();
+                        .filter(p -> !p.isOcupada())
+                        .count();
     }
 
     public List<Plaza> plazasDisponibles() {
         return plazas.stream()
-                     .filter(p -> !p.isOcupada())
-                     .toList();
+                    .filter(p -> !p.isOcupada())
+                    .toList();
     }
 
     public void mostrarPlazasDisponibles() {
     System.out.println("Cantidad de plazas disponibles: " + cantidadPlazasDisponibles());
     for (Plaza p : plazasDisponibles()) {
-        System.out.println("Plaza N°" + p.getNumeroPlaza());
+        System.out.println(Mensajes.NUMERO_PLAZA + p.getNumeroPlaza());
     }
 }
 }
