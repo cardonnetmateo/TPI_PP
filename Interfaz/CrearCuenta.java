@@ -1,6 +1,7 @@
 package Interfaz;
 import javax.swing.*;
 
+import Enum.Mensajes;
 import Modelos.UsuarioInterno;
 
 public class CrearCuenta extends JFrame {
@@ -10,7 +11,7 @@ public class CrearCuenta extends JFrame {
     private JTextField txtModelo;
 
     public CrearCuenta() {
-        setTitle("Crear Cuenta");
+        setTitle(Mensajes.CREAR_CUENTA);
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -19,7 +20,7 @@ public class CrearCuenta extends JFrame {
         add(titulo);
         titulo.setBounds(100, 20, 250, 30);
 
-        JLabel lblUsuario = new JLabel("Usuario:");
+        JLabel lblUsuario = new JLabel(Mensajes.USUARIO);
         add(lblUsuario);
         lblUsuario.setBounds(50, 70, 100, 25);
 
@@ -27,7 +28,7 @@ public class CrearCuenta extends JFrame {
         add(cmbUsuarios);
         cmbUsuarios.setBounds(150, 70, 200, 25);
 
-        JLabel lblPatente = new JLabel("Patente del vehículo:");
+        JLabel lblPatente = new JLabel(Mensajes.PATENTE_VEHICULO);
         add(lblPatente);
         lblPatente.setBounds(50, 110, 100, 25);
 
@@ -35,7 +36,7 @@ public class CrearCuenta extends JFrame {
         add(txtPatente);
         txtPatente.setBounds(150, 110, 200, 25);
 
-        JLabel lblModelo = new JLabel("Modelo del vehículo:");
+        JLabel lblModelo = new JLabel(Mensajes.MODELO_VEHICULO);
         add(lblModelo);
         lblModelo.setBounds(50, 150, 100, 25);
 
@@ -43,7 +44,7 @@ public class CrearCuenta extends JFrame {
         add(txtModelo);
         txtModelo.setBounds(150, 150, 200, 25);
 
-        btnCrear = new JButton("Crear Cuenta");
+        btnCrear = new JButton(Mensajes.CREAR_CUENTA);
         add(btnCrear);
         btnCrear.setBounds(150, 200, 120, 30);
     }
