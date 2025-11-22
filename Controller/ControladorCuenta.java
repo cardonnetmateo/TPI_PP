@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ControladorCuenta {
+    //CREAR CUENTA
     private MenuPrincipal vistaMenuPrincipal;
     private CrearCuenta vistaCrearCuenta;
     private RecargarSaldo vistaRecargarSaldo;
+    //RECARGAR SALDO
 
     private final List<UsuarioInterno> usuarios = new ArrayList<>();
+    private final List<Cuenta> cuentas = new ArrayList<>();
 
     //MENU PRINCIPAL
     public void mostrarMenuPrincipal(){
@@ -70,15 +73,16 @@ public class ControladorCuenta {
             Cuenta cuenta = new Cuenta(seleccionado);
             Vehiculo vehiculo = new Vehiculo(patente, modelo, cuenta);
 
+            // Registrar la cuenta creada para que esté disponible en recargas
+            cuentas.add(cuenta);
+
             // Aquí podrías persistir las instancias en un repositorio; por ahora solo mostramos confirmación
             JOptionPane.showMessageDialog(vistaCrearCuenta,
                     "Cuenta creada para " + seleccionado.getNombre() + "\nVehículo: " + vehiculo.getPatente(),
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            // Cerrar ventana de creación
             vistaCrearCuenta.dispose();
-            // Volver al menú principal
             mostrarMenuPrincipal();
         });
     }
@@ -96,18 +100,88 @@ public class ControladorCuenta {
         }
     }
 
-    //RECARGAR SALDO
-
+    // RECARGAR SALDO: poblar combo de cuentas y configurar listeners
     public void mostrarRecargarSaldo(){
         vistaRecargarSaldo = new RecargarSaldo();
         vistaRecargarSaldo.setLocationRelativeTo(null);
+        poblarComboCuentas();
+        configurarEventosRecargarSaldo();
         vistaRecargarSaldo.setVisible(true);
     }
 
+    private void poblarComboCuentas() {
+        vistaRecargarSaldo.getCmbCuentas().removeAllItems();
+        for (Cuenta c : cuentas) {
+            vistaRecargarSaldo.getCmbCuentas().addItem(c);
+        }
+    }
+
+    //RECARGAR SALDO
+
     private void configurarEventosRecargarSaldo(){
-        vistaRecargarSaldo.getBtnRecargar().addActionListener(e -> {
-            // Lógica para recargar saldo
-            System.out.println("Recargar saldo...");
+        // Cuenta corriente
+        vistaRecargarSaldo.getBtnRecargarCuentaCorriente().addActionListener(e -> {
+            Cuenta seleccion = (Cuenta) vistaRecargarSaldo.getCmbCuentas().getSelectedItem();
+            if (seleccion == null) {
+                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Seleccione una cuenta.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String txt = vistaRecargarSaldo.getTxtCantidad().getText().trim();
+            Integer cantidad;
+            try {
+                cantidad = Integer.parseInt(txt);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Ingrese una cantidad válida.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Asegurar que la cuenta sea de tipo cuenta corriente
+            seleccion.setCuentaCorriente();
+            seleccion.recargarSaldoCuentaCorriente(cantidad);
+
+            JOptionPane.showMessageDialog(vistaRecargarSaldo, "Se recargaron $" + cantidad + " a la cuenta de " + seleccion.getUsuario().getNombre(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            vistaRecargarSaldo.dispose();
+            mostrarMenuPrincipal();
+        });
+
+        // Abono mensual
+        vistaRecargarSaldo.getBtnRecargarAbonoMensual().addActionListener(e -> {
+            Cuenta seleccion = (Cuenta) vistaRecargarSaldo.getCmbCuentas().getSelectedItem();
+            if (seleccion == null) {
+                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Seleccione una cuenta.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String txt = vistaRecargarSaldo.getTxtCantidad().getText().trim();
+            Integer monto;
+            try {
+                monto = Integer.parseInt(txt);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Ingrese un monto válido para la tarifa.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear tarifa de abono mensual y mostrarla
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            java.time.LocalDate fin = hoy.plusDays(30);
+            Modelos.TarifaAbonoMensual tarifa = new Modelos.TarifaAbonoMensual(monto, hoy.toString(), fin.toString());
+
+            // Mostrar la tarifa al usuario y confirmar
+            int resp = JOptionPane.showConfirmDialog(vistaRecargarSaldo,
+                    "Se va a generar un abono mensual con la siguiente tarifa:\nMonto: $" + monto + "\nDesde: " + hoy + "\nHasta: " + fin + "\n¿Confirmar?",
+                    "Confirmar Abono Mensual",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (resp != JOptionPane.YES_OPTION) return;
+
+            // Setear tipo y registrar cobro
+            seleccion.setAbonoMensual();
+            seleccion.registrarCobroAbono(tarifa);
+
+            JOptionPane.showMessageDialog(vistaRecargarSaldo, "Abono mensual generado para " + seleccion.getUsuario().getNombre(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            vistaRecargarSaldo.dispose();
+            mostrarMenuPrincipal();
         });
     }
 
