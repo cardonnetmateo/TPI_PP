@@ -12,4 +12,13 @@ public abstract class Persona {
     private int nroDocumento;
     private String mail;
     private Integer telefono;
+
+    public Persona(String nombre, int edad, TipoDocumento tipo, int nroDocumento, String mail, Integer telefono) {
+        this.nombre = nombre;
+        this.edad = edad;
+        this.tipo = tipo;
+        this.nroDocumento = nroDocumento;
+        this.mail = mail;
+        this.telefono = telefono;
+    }
 }
