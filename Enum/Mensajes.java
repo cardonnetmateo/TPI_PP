@@ -20,5 +20,7 @@ public class Mensajes {
     public static final String EXITO = "Éxito";
     public static final String RETIRAR_VEHICULO = "Retirar Vehículo.";
     public static final String CREAR_CUENTA = "Crear cuenta.";
+    public static final String ADMINISTRAR_ESTACIONAMIENTO = "Administrar Estacionamiento";
     public static final String ERROR = "Error.";
+    public static final String SELECCIONAR_OPCION = "Seleccione una opción: ";
 }

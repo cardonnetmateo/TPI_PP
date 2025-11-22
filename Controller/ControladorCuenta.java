@@ -1,11 +1,15 @@
 package Controller;
 
 import Interfaz.CrearCuenta;
+import Interfaz.IngresarVehiculo;
+import Interfaz.MenuEstacionamiento;
+import Interfaz.RetirarVehiculo;
 import Interfaz.MenuPrincipal;
 import Interfaz.RecargarSaldo;
 import Modelos.UsuarioInterno;
 import Modelos.Cuenta;
 import Modelos.Vehiculo;
+import Modelos.Plaza;
 import Enum.TipoDocumento;
 import Enum.Mensajes;
 import Enum.MensajesUI;
@@ -24,6 +28,8 @@ public class ControladorCuenta {
 
     private final List<UsuarioInterno> usuarios = new ArrayList<>();
     private final List<Cuenta> cuentas = new ArrayList<>();
+    private final List<Vehiculo> vehiculos = new ArrayList<>();
+    private final List<Plaza> plazas = new ArrayList<>();
 
     //MENU PRINCIPAL
     public void mostrarMenuPrincipal(){
@@ -31,6 +37,31 @@ public class ControladorCuenta {
         vistaMenuPrincipal.setLocationRelativeTo(null);
         vistaMenuPrincipal.setVisible(true);
         configurarEventosMenuPrincipal();
+    }
+
+    private Vehiculo findVehiculoByPatente(String patente) {
+        for (Vehiculo v : vehiculos) {
+            if (v.getPatente() != null && v.getPatente().equalsIgnoreCase(patente)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    private void cargarVehiculosEjemplo() {
+        if (!vehiculos.isEmpty()) return; // ya cargados
+        vehiculos.add(new Vehiculo("ABC123", "Model A"));
+        vehiculos.add(new Vehiculo("DEF456", "Model B"));
+        vehiculos.add(new Vehiculo("GHI789", "Model C"));
+    }
+
+    private void cargarPlazasEjemplo() {
+        if (!plazas.isEmpty()) return;
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        plazas.add(new Plaza(1, hoy));
+        plazas.add(new Plaza(2, hoy));
+        plazas.add(new Plaza(3, hoy));
+        plazas.add(new Plaza(4, hoy));
     }
 
     private void configurarEventosMenuPrincipal(){
@@ -43,6 +74,99 @@ public class ControladorCuenta {
             vistaMenuPrincipal.dispose();
             mostrarRecargarSaldo();
         });
+    }
+
+    public void mostrarAdministrarEstacionamiento() {
+        MenuEstacionamiento vista = new MenuEstacionamiento();
+        vista.setLocationRelativeTo(null);
+
+        // Cargar vehículos de prueba y poblar combo
+        cargarVehiculosEjemplo();
+        vista.getCmbVehiculos().removeAllItems();
+        for (Vehiculo v : vehiculos) {
+            vista.getCmbVehiculos().addItem(v);
+        }
+
+        // Abrir formulario de Ingresar Vehículo
+        vista.getBtnIngresarVehiculo().addActionListener(e -> {
+            IngresarVehiculo ingresoView = new IngresarVehiculo();
+            ingresoView.setLocationRelativeTo(null);
+
+            // poblar combo de plazas disponibles
+            cargarPlazasEjemplo();
+            ingresoView.getCmbPlazas().removeAllItems();
+            for (Plaza p : plazas) ingresoView.getCmbPlazas().addItem(p);
+
+            ingresoView.getBtnIngresar().addActionListener(ev -> {
+                String patente = ingresoView.getTxtPatente().getText().trim();
+                if (patente.isEmpty()) {
+                    JOptionPane.showMessageDialog(ingresoView, "Ingrese patente.");
+                    return;
+                }
+
+                Plaza plazaSeleccionada = (Plaza) ingresoView.getCmbPlazas().getSelectedItem();
+                if (plazaSeleccionada == null) {
+                    JOptionPane.showMessageDialog(ingresoView, "Seleccione una plaza.");
+                    return;
+                }
+
+                if (plazaSeleccionada.isOcupada()) {
+                    JOptionPane.showMessageDialog(ingresoView, "La plaza seleccionada está ocupada.");
+                    return;
+                }
+
+                // Crear vehículo, asignar plaza y marcarla ocupada
+                Vehiculo nuevo = new Vehiculo(patente, "N/A");
+                nuevo.setPlaza(plazaSeleccionada);
+                plazaSeleccionada.setOcupada();
+
+                vehiculos.add(nuevo);
+                // refrescar combo en la vista principal de estacionamiento
+                vista.getCmbVehiculos().removeAllItems();
+                for (Vehiculo v : vehiculos) vista.getCmbVehiculos().addItem(v);
+
+                JOptionPane.showMessageDialog(ingresoView, "Vehículo agregado en plaza " + plazaSeleccionada.getNumeroPlaza());
+                ingresoView.dispose();
+            });
+
+            ingresoView.setVisible(true);
+        });
+
+        // Abrir formulario de Retirar Vehículo
+        vista.getBtnRetirarVehiculo().addActionListener(e -> {
+            RetirarVehiculo retirarView = new RetirarVehiculo();
+            retirarView.setLocationRelativeTo(null);
+
+            retirarView.getBtnRetirar().addActionListener(ev -> {
+                String patente = retirarView.getTxtPatente().getText().trim();
+                if (patente.isEmpty()) {
+                    JOptionPane.showMessageDialog(retirarView, "Ingrese patente.");
+                    return;
+                }
+
+                Vehiculo encontrada = findVehiculoByPatente(patente);
+                if (encontrada == null) {
+                    JOptionPane.showMessageDialog(retirarView, "Vehículo no encontrado: " + patente);
+                    return;
+                }
+                // Acción de retiro: liberar plaza si la tenía y remover vehículo
+                Plaza plaza = encontrada.getPlaza();
+                if (plaza != null) {
+                    plaza.setApta();
+                    encontrada.setPlaza(null);
+                }
+                vehiculos.remove(encontrada);
+                // refrescar combo en vista estacionamiento
+                vista.getCmbVehiculos().removeAllItems();
+                for (Vehiculo v : vehiculos) vista.getCmbVehiculos().addItem(v);
+                JOptionPane.showMessageDialog(retirarView, "Vehículo " + patente + " retirado.");
+                retirarView.dispose();
+            });
+
+            retirarView.setVisible(true);
+        });
+
+        vista.setVisible(true);
     }
 
     //CREAR CUENTA
@@ -75,8 +199,9 @@ public class ControladorCuenta {
             Cuenta cuenta = new Cuenta(seleccionado);
             Vehiculo vehiculo = new Vehiculo(patente, modelo, cuenta);
 
-            // Registrar la cuenta creada para que esté disponible en recargas
+            // Registrar la cuenta y el vehículo creados para que estén disponibles
             cuentas.add(cuenta);
+            vehiculos.add(vehiculo);
 
             // Aquí podrías persistir las instancias en un repositorio; por ahora solo mostramos confirmación
             JOptionPane.showMessageDialog(vistaCrearCuenta,

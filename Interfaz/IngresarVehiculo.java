@@ -5,6 +5,8 @@ import Enum.Mensajes;
 import Modelos.Plaza;
 public class IngresarVehiculo extends JFrame{
     private JButton btnIngresar;
+    private JTextField txtPatente;
+    private JComboBox<Modelos.Plaza> cmbPlazas;
 
     public IngresarVehiculo(){
         setTitle(Mensajes.INGRESAR_VEHICULO);
@@ -20,7 +22,7 @@ public class IngresarVehiculo extends JFrame{
         add(lblPatente);
         lblPatente.setBounds(50, 70, 150, 25);
 
-        JTextField txtPatente = new JTextField();
+        txtPatente = new JTextField();
         add(txtPatente);
         txtPatente.setBounds(200, 70, 100, 25);
 
@@ -28,7 +30,7 @@ public class IngresarVehiculo extends JFrame{
         add(lblPlaza);
         lblPlaza.setBounds(50, 110, 150, 25);
 
-        JComboBox<Plaza> cmbPlazas = new JComboBox<>();
+        cmbPlazas = new JComboBox<>();
         add(cmbPlazas);
         cmbPlazas.setBounds(200, 110, 100, 25);
 
@@ -39,5 +41,13 @@ public class IngresarVehiculo extends JFrame{
     
     public JButton getBtnIngresar() {
         return btnIngresar;
+    }
+
+    public JTextField getTxtPatente() {
+        return txtPatente;
+    }
+
+    public JComboBox<Modelos.Plaza> getCmbPlazas() {
+        return cmbPlazas;
     }
 }

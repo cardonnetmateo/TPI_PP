@@ -25,6 +25,8 @@ public class MenuPrincipal extends JFrame {
         btnRecargarSaldo.setBounds(125, 110, 150, 30);
         add(btnRecargarSaldo);
 
+        // boton Administrar Estacionamiento movido al Inicio
+
     }
 
     public JButton getBtnCrearCuenta() {

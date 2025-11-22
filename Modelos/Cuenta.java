@@ -15,13 +15,18 @@ public class Cuenta {
     private TipoCuenta tipo;
     private List<RecargaSaldo> recargos = new ArrayList<>();
     private List<AbonoMensual> abonos = new ArrayList<>();
+    
 
     public Cuenta(Persona usuario) {
         this.usuario = usuario;
         this.saldo = 0;
         this.tipo = TipoCuenta.CUENTA_CORRIENTE;
     }
-
+    
+    @Override
+    public String toString() {
+        return usuario.getNombre();
+    }
 
     //ABONO MENSUAL
     public void registrarCobroAbono(TarifaAbonoMensual tarifa) {

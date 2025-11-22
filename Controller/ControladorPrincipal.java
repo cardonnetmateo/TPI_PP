@@ -26,8 +26,7 @@ public class ControladorPrincipal {
 
         vista.getBtnAdministrarEstacionamiento().addActionListener(e -> {
             vista.dispose(); // cerrar ventana actual
-            // Acá iría: new ControladorEstacionamiento().mostrar();
-            System.out.println("Abrir gestión de estacionamiento...");
+            new ControladorCuenta().mostrarAdministrarEstacionamiento();
         });
     }
 
