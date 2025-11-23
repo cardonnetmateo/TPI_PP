@@ -13,12 +13,7 @@ public class UsuarioInterno extends Persona {
     private Rol rol;
 
     public UsuarioInterno(String nombre, int edad, TipoDocumento tipo, int nroDocumento, String mail, Integer telefono, Integer legajo, Rol rol) {
-        super.setNombre(nombre);
-        super.setEdad(edad);
-        super.setTipo(tipo);
-        super.setNroDocumento(nroDocumento);
-        super.setMail(mail);
-        super.setTelefono(telefono);
+        super(nombre, edad, tipo, nroDocumento, mail, telefono);
         this.legajo = legajo;
         this.rol = rol;
     }
