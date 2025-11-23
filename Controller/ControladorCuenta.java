@@ -7,6 +7,8 @@ import Modelos.UsuarioInterno;
 import Modelos.Cuenta;
 import Modelos.Vehiculo;
 import Enum.TipoDocumento;
+import Enum.Mensajes;
+import Enum.MensajesUI;
 import Enum.Rol;
 
 import javax.swing.JOptionPane;
@@ -60,12 +62,12 @@ public class ControladorCuenta {
             UsuarioInterno seleccionado = (UsuarioInterno) vistaCrearCuenta.getCmbUsuarios().getSelectedItem();
 
             if (seleccionado == null) {
-                JOptionPane.showMessageDialog(vistaCrearCuenta, "Seleccione un usuario.", "Error", JOptionPane.ERROR_MESSAGE);
+                MensajesUI.error(vistaCrearCuenta, Mensajes.SELECCIONAR_USUARIO);
                 return;
             }
 
             if (patente.isEmpty() || modelo.isEmpty()) {
-                JOptionPane.showMessageDialog(vistaCrearCuenta, "Complete patente y modelo.", "Error", JOptionPane.ERROR_MESSAGE);
+                MensajesUI.error(vistaCrearCuenta, Mensajes.PATENTE_MODELO);
                 return;
             }
 
@@ -79,7 +81,7 @@ public class ControladorCuenta {
             // Aquí podrías persistir las instancias en un repositorio; por ahora solo mostramos confirmación
             JOptionPane.showMessageDialog(vistaCrearCuenta,
                     "Cuenta creada para " + seleccionado.getNombre() + "\nVehículo: " + vehiculo.getPatente(),
-                    "Éxito",
+                    Mensajes.EXITO,
                     JOptionPane.INFORMATION_MESSAGE);
 
             vistaCrearCuenta.dispose();
@@ -123,7 +125,7 @@ public class ControladorCuenta {
         vistaRecargarSaldo.getBtnRecargarCuentaCorriente().addActionListener(e -> {
             Cuenta seleccion = (Cuenta) vistaRecargarSaldo.getCmbCuentas().getSelectedItem();
             if (seleccion == null) {
-                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Seleccione una cuenta.", "Error", JOptionPane.ERROR_MESSAGE);
+                MensajesUI.error(vistaRecargarSaldo, Mensajes.SELECCIONE_CUENTA);
                 return;
             }
 
@@ -132,7 +134,7 @@ public class ControladorCuenta {
             try {
                 cantidad = Integer.parseInt(txt);
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Ingrese una cantidad válida.", "Error", JOptionPane.ERROR_MESSAGE);
+                MensajesUI.error(vistaRecargarSaldo, Mensajes.INGRESAR_CANTIDAD_VALIDA);
                 return;
             }
 
@@ -149,17 +151,16 @@ public class ControladorCuenta {
         vistaRecargarSaldo.getBtnRecargarAbonoMensual().addActionListener(e -> {
             Cuenta seleccion = (Cuenta) vistaRecargarSaldo.getCmbCuentas().getSelectedItem();
             if (seleccion == null) {
-                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Seleccione una cuenta.", "Error", JOptionPane.ERROR_MESSAGE);
+                MensajesUI.error(vistaRecargarSaldo, Mensajes.SELECCIONE_CUENTA);
                 return;
             }
 
             String txt = vistaRecargarSaldo.getTxtCantidad().getText().trim();
-            Integer monto;
+            Integer monto = null;
             try {
                 monto = Integer.parseInt(txt);
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(vistaRecargarSaldo, "Ingrese un monto válido para la tarifa.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                MensajesUI.error(vistaRecargarSaldo, Mensajes.INGRESAR_CANTIDAD_VALIDA);
             }
 
             // Crear tarifa de abono mensual y mostrarla
