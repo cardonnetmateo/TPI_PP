@@ -1,6 +1,8 @@
 package Interfaz;
 import javax.swing.*;
 
+import Enum.Mensajes;
+
 public class MenuPrincipal extends JFrame {
     private JButton btnCrearCuenta;
     private JButton btnRecargarSaldo;
@@ -11,15 +13,15 @@ public class MenuPrincipal extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
-        JLabel titulo = new JLabel("Seleccione una opción:", SwingConstants.CENTER);
+        JLabel titulo = new JLabel(Mensajes.SELECCIONAR_OPCION, SwingConstants.CENTER);
         titulo.setBounds(100, 20, 200, 30);
         add(titulo);
 
-        btnCrearCuenta = new JButton("Crear Cuenta");
+        btnCrearCuenta = new JButton(Mensajes.CREAR_CUENTA);
         btnCrearCuenta.setBounds(125, 70, 150, 30);
         add(btnCrearCuenta);
 
-        btnRecargarSaldo = new JButton("Recargar Saldo");
+        btnRecargarSaldo = new JButton(Mensajes.RECARGAR_SALDO);
         btnRecargarSaldo.setBounds(125, 110, 150, 30);
         add(btnRecargarSaldo);
 
@@ -34,3 +36,4 @@ public class MenuPrincipal extends JFrame {
     }
 
 }
+
