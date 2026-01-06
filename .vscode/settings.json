@@ -1,5 +1,8 @@
 {
   "java.project.referencedLibraries": [
-    "lib/lombok.jar"
+    "d:\\Desktop\\TPI_PP\\lib\\lombok.jar"
+  ],
+  "java.project.sourcePaths": [
+    "."
   ]
 }

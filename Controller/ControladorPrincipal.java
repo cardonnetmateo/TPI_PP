@@ -20,12 +20,12 @@ public class ControladorPrincipal {
     private void configurarEventos() {
 
         vista.getBtnAdministrarCuenta().addActionListener(e -> {
-            vista.dispose(); 
+            vista.dispose();
             new ControladorCuenta().mostrarMenuPrincipal();
         });
 
         vista.getBtnAdministrarEstacionamiento().addActionListener(e -> {
-            vista.dispose(); // cerrar ventana actual
+            vista.dispose();
             new ControladorCuenta().mostrarAdministrarEstacionamiento();
         });
     }
